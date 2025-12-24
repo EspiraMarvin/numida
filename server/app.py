@@ -3,6 +3,7 @@ from flask import Flask
 from flask_graphql import GraphQLView
 from flask_cors import CORS
 import graphene
+from utils import get_payment_status
 
 app = Flask(__name__)
 CORS(app)
@@ -38,10 +39,15 @@ loans = [
     },
 ]
 
+
+"""
+    I updated the loan_payments payment_dates to 2025 for correctness
+    when calculating loan payment statuses
+"""
 loan_payments = [
-    {"id": 1, "loan_id": 1, "payment_date": datetime.date(2024, 3, 4)},
-    {"id": 2, "loan_id": 2, "payment_date": datetime.date(2024, 3, 15)},
-    {"id": 3, "loan_id": 3, "payment_date": datetime.date(2024, 4, 5)},
+    {"id": 1, "loan_id": 1, "payment_date": datetime.date(2025, 3, 4)},
+    {"id": 2, "loan_id": 2, "payment_date": datetime.date(2025, 3, 15)},
+    {"id": 3, "loan_id": 3, "payment_date": datetime.date(2025, 4, 5)},
 ]
 
 
@@ -57,14 +63,26 @@ class ExistingLoans(graphene.ObjectType):
     name = graphene.String()
     interest_rate = graphene.Float()
     principal = graphene.Int()
+    due_date = graphene.Date()
     loan_payments = graphene.List(LoanPayment)
+    status = graphene.String()
 
     def resolve_loan_payments(self, _info):
         # get loan_id from loan_payments
         loan_id = self["id"]
 
-        # fetche payments per loan from loan_payments
+        # fetch payments per loan from loan_payments
         return [p for p in loan_payments if p["loan_id"] == loan_id]
+
+    def resolve_status(self, _info):
+        loan_id = self["id"]
+
+        payment = next(
+            (p for p in loan_payments if p["loan_id"] == loan_id),
+            None,
+        )
+
+        return get_payment_status(self, payment)
 
 
 class Query(graphene.ObjectType):
@@ -78,7 +96,8 @@ schema = graphene.Schema(query=Query)
 
 
 app.add_url_rule(
-    "/graphql", view_func=GraphQLView.as_view("graphql", schema=schema, graphiql=True)
+    "/graphql",
+    view_func=GraphQLView.as_view("graphql", schema=schema, graphiql=True),
 )
 
 
