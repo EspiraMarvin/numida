@@ -45,11 +45,26 @@ loan_payments = [
 ]
 
 
+# loan payment type
+class LoanPayment(graphene.ObjectType):
+    id = graphene.Int()
+    loan_id = graphene.Int()
+    payment_date = graphene.Date()
+
+
 class ExistingLoans(graphene.ObjectType):
     id = graphene.Int()
     name = graphene.String()
     interest_rate = graphene.Float()
     principal = graphene.Int()
+    loan_payments = graphene.List(LoanPayment)
+
+    def resolve_loan_payments(self, _info):
+        # get loan_id from loan_payments
+        loan_id = self["id"]
+
+        # fetche payments per loan from loan_payments
+        return [p for p in loan_payments if p["loan_id"] == loan_id]
 
 
 class Query(graphene.ObjectType):
