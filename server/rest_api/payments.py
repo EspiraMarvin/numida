@@ -43,7 +43,10 @@ def add_payment():
             return (
                 jsonify(
                     {
-                        "error": f"Loan payment with id {loan_obj['id']} already submitted"
+                        "error": (
+                            f"Loan payment with id {loan_obj['id']} "
+                            "already submitted"
+                        )
                     }
                 ),
                 400,
