@@ -69,7 +69,23 @@ function App() {
     <>
       <div>
         <h1>Existing Loans & Payments</h1>
-        <ul></ul>
+        {loading && (
+          <div className="loading-container">
+            <div className="spinner"></div>
+            <p>Loading loans & payments...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="error-container" role="alert">
+            <h3>Error loading data</h3>
+            <p>{error.message}</p>
+            <button onClick={() => refetch()} className="retry-button">
+              Retry
+            </button>
+          </div>
+        )}
+
         {data?.loans.length === 0 ? (
           <p>No loans found</p>
         ) : (
