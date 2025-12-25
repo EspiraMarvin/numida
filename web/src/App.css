@@ -34,9 +34,49 @@
 }
 
 .card {
-  padding: 2em;
+  border: 1px solid #888;
+  border-radius: 10px;
+  padding: 0.4rem;
 }
 
 .read-the-docs {
   color: #888;
+}
+
+.loans-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.status {
+  display: inline-block;
+  padding: 0.5rem 6rem;
+  border-radius: 18px;
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-top: 0.8rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.loan-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.loan-details p {
+  display: flex;
+  margin: 0;
+  font-size: 0.9rem;
+  color: #999;
+  padding-left: 0.5rem;
+  gap: 8px;
+  align-items: center;
+}
+
+.loan-details b {
+  color: #e3e3e3;
 }
