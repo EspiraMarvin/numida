@@ -4,7 +4,15 @@ from marshmallow import Schema, fields, ValidationError, validates
 
 class PaymentDTO(Schema):
     loan_id = fields.Int(required=True)
-    payment_date = fields.Str(required=False, allow_none=True)
+    payment_amount = fields.Float(required=True)
+    payment_date = fields.Str(required=True)
+
+    @validates("payment_amount")
+    def validate_payment_amount(self, value):
+        if value is None:
+            raise ValidationError("payment_amount is required")
+        if value <= 0:
+            raise ValidationError("payment_amount must be greater than 0")
 
     @validates("payment_date")
     def validate_payment_date(self, value):

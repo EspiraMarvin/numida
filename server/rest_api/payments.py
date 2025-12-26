@@ -1,9 +1,7 @@
 import datetime
-
 from flask import jsonify, request
 from marshmallow import ValidationError
 from state import loan_payments, loans
-
 from rest_api.dtos.payment_dto import PaymentDTO
 
 # loan lookup
@@ -22,6 +20,7 @@ def add_payment():
             return jsonify({"error": err.messages}), 400
 
         loan_id = validated_data["loan_id"]
+        payment_amount = validated_data.get("payment_amount")
         payment_date_str = validated_data.get("payment_date")
 
         # validate loan exists
@@ -55,19 +54,27 @@ def add_payment():
         # parse payment date
         payment_date = None
         if payment_date_str:
-            year, month, day = map(int, payment_date_str.split("-"))
-            payment_date = datetime.date(year, month, day)
+            try:
+                year, month, day = map(int, payment_date_str.split("-"))
+                payment_date = datetime.date(year, month, day)
+            except Exception:
+                return (
+                    jsonify({"error": "Invalid date format, use YYYY-MM-DD"}),
+                    400,
+                )
 
         # generate new payment ID
-        new_id = len(loan_payments) + 1
+        payment_id = max([p["id"] for p in loan_payments], default=0) + 1
 
         # create new payment
         new_payment = {
-            "id": new_id,
+            "id": payment_id,
             "loan_id": loan_id,
+            "payment_amount": payment_amount,
             "payment_date": payment_date,
         }
 
+        # append to in memory loan_payments store
         loan_payments.append(new_payment)
 
         return (
@@ -77,6 +84,7 @@ def add_payment():
                     "payment": {
                         "id": new_payment["id"],
                         "loan_id": new_payment["loan_id"],
+                        "payment_amount": new_payment["payment_amount"],
                         "payment_date": (
                             str(new_payment["payment_date"])
                             if new_payment["payment_date"]
