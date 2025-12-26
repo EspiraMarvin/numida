@@ -30,14 +30,15 @@ export type ExistingLoans = {
   loanPayments?: Maybe<Array<Maybe<LoanPayment>>>;
   name?: Maybe<Scalars['String']['output']>;
   principal?: Maybe<Scalars['Int']['output']>;
-  status?: Maybe<Scalars['String']['output']>;
 };
 
 export type LoanPayment = {
   __typename?: 'LoanPayment';
   id?: Maybe<Scalars['Int']['output']>;
   loanId?: Maybe<Scalars['Int']['output']>;
+  paymentAmount?: Maybe<Scalars['Int']['output']>;
   paymentDate?: Maybe<Scalars['Date']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
 };
 
 export type Query = {
@@ -48,7 +49,7 @@ export type Query = {
 export type GetLoansQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetLoansQuery = { __typename?: 'Query', loans?: Array<{ __typename?: 'ExistingLoans', id?: number | null, name?: string | null, principal?: number | null, interestRate?: number | null, dueDate?: any | null, status?: string | null, loanPayments?: Array<{ __typename?: 'LoanPayment', id?: number | null, loanId?: number | null, paymentDate?: any | null } | null> | null } | null> | null };
+export type GetLoansQuery = { __typename?: 'Query', loans?: Array<{ __typename?: 'ExistingLoans', id?: number | null, name?: string | null, principal?: number | null, interestRate?: number | null, dueDate?: any | null, loanPayments?: Array<{ __typename?: 'LoanPayment', id?: number | null, loanId?: number | null, paymentAmount?: number | null, paymentDate?: any | null, status?: string | null } | null> | null } | null> | null };
 
 
-export const GetLoansDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetLoans"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"loans"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"principal"}},{"kind":"Field","name":{"kind":"Name","value":"interestRate"}},{"kind":"Field","name":{"kind":"Name","value":"dueDate"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"loanPayments"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"loanId"}},{"kind":"Field","name":{"kind":"Name","value":"paymentDate"}}]}}]}}]}}]} as unknown as DocumentNode<GetLoansQuery, GetLoansQueryVariables>;
+export const GetLoansDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetLoans"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"loans"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"principal"}},{"kind":"Field","name":{"kind":"Name","value":"interestRate"}},{"kind":"Field","name":{"kind":"Name","value":"dueDate"}},{"kind":"Field","name":{"kind":"Name","value":"loanPayments"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"loanId"}},{"kind":"Field","name":{"kind":"Name","value":"paymentAmount"}},{"kind":"Field","name":{"kind":"Name","value":"paymentDate"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]}}]} as unknown as DocumentNode<GetLoansQuery, GetLoansQueryVariables>;
