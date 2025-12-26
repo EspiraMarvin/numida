@@ -2,7 +2,9 @@
 export interface LoanPayment {
   id: number;
   loanId: number;
+  paymentAmount: number;
   paymentDate: string;
+  status: string;
 }
 
 export interface Loan {
@@ -13,4 +15,10 @@ export interface Loan {
   dueDate: string;
   status: string;
   loanPayments: LoanPayment[];
+}
+
+export interface AddPaymentFormData {
+  loanId: string;
+  paymentAmount: string;
+  paymentDate: string;
 }

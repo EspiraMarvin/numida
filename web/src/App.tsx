@@ -1,6 +1,9 @@
 import './App.css';
 import { gql, useQuery } from '@apollo/client';
-import { Loan } from './types';
+import { Loan, LoanPayment } from './types';
+import { formatCurrency, getStatusColor } from './helpers/utils';
+import { AddNewPayment } from './components/AddPayment';
+// import { LoanCalculator } from './components/LoanCalculator';
 
 const GET_LOANS_WITH_PAYMENTS = gql`
   query GetLoans {
@@ -10,59 +13,28 @@ const GET_LOANS_WITH_PAYMENTS = gql`
       principal
       interestRate
       dueDate
-      status
       loanPayments {
         id
         loanId
+        paymentAmount
         paymentDate
+        status
       }
     }
   }
 `;
 
-const AddNewPayment = () => {
-  return (
-    <div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <p>
-          <label>Payment Loan Id</label>
-          <input name="loan-id" onChange={() => {}} />
-        </p>
-
-        <p>
-          <label>Payment Amount</label>
-          <input name="payment-amount" type="number" onChange={() => {}} />
-        </p>
-        <p>
-          <button type="submit">Add Payment</button>
-        </p>
-      </form>
-    </div>
-  );
-};
-
 function App() {
+  /** query loans */
   const { loading, error, data, refetch } = useQuery(GET_LOANS_WITH_PAYMENTS, {
     errorPolicy: 'all',
   });
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'On Time':
-        return 'green';
-      case 'Late':
-        return 'orange';
-      case 'Defaulted':
-        return 'red';
-      case 'Unpaid':
-        return 'grey';
-      default:
-        return 'grey';
-    }
+  /**
+   * refetch loans after a successful addition of a loan payment
+   */
+  const handlePaymentAdded = () => {
+    refetch();
   };
 
   return (
@@ -91,17 +63,13 @@ function App() {
         ) : (
           <div className="loans-grid">
             {data?.loans.map((loan: Loan) => {
-              const paymentDate =
-                loan.loanPayments && loan.loanPayments.length > 0
-                  ? loan.loanPayments[0].paymentDate
-                  : null;
               return (
                 <div key={loan.id} className="card">
                   <h4>{loan.name}</h4>
                   <div className="loan-details">
                     <p>
                       <b>Principal:</b>
-                      Kes {loan.principal}{' '}
+                      {formatCurrency(loan.principal)}{' '}
                     </p>
                     <p>
                       <b>Interest Rate:</b>
@@ -111,18 +79,51 @@ function App() {
                       <b>Due Date:</b>
                       {loan.dueDate}{' '}
                     </p>
-                    <p>
-                      <b>Payment Date:</b>
-                      {paymentDate || 'N/A'}{' '}
-                    </p>
-                    <div
-                      style={{
-                        backgroundColor: getStatusColor(loan.status),
-                      }}
-                      className="status"
-                    >
-                      {loan.status}
+
+                    <div className="payment-divider" />
+
+                    <div className="loan-payments">
+                      {loan.loanPayments && loan.loanPayments.length > 0 ? (
+                        loan.loanPayments.map((payment: LoanPayment) => (
+                          <div key={payment.id} className="payment">
+                            <p>
+                              <b>Payment Date:</b>{' '}
+                              {payment.paymentDate || 'N/A'}
+                            </p>
+                            {payment.paymentAmount && (
+                              <p>
+                                <b>Amount:</b>{' '}
+                                {formatCurrency(payment.paymentAmount) ?? 'N/A'}
+                              </p>
+                            )}
+
+                            <div
+                              style={{
+                                backgroundColor: getStatusColor(payment.status),
+                              }}
+                              className="status"
+                            >
+                              {payment.status}
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div
+                          style={{
+                            backgroundColor: getStatusColor('Unpaid'),
+                          }}
+                          className="status"
+                        >
+                          UnPaid
+                        </div>
+                      )}
                     </div>
+
+                    {/* <LoanCalculator
+                      principal={loan.principal}
+                      rate={loan.interestRate}
+                      months={12}
+                    /> */}
                   </div>
                 </div>
               );
@@ -131,7 +132,10 @@ function App() {
         )}
 
         <h1>Add New Payment</h1>
-        <AddNewPayment />
+        <AddNewPayment
+          loans={data?.loans}
+          onPaymentAdded={handlePaymentAdded}
+        />
       </div>
     </>
   );
