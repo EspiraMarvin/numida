@@ -54,3 +54,17 @@ To get all existing loans:
   "message": "Welcome to the Numida API"
 }
 ```
+
+### UNIT TEST
+
+```bash
+python -m unittest test_app.py -v
+```
+
+### UNIT TEST COVERAGE
+
+```bash
+coverage run
+
+coverage report -m
+```
