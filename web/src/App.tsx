@@ -3,6 +3,7 @@ import { gql, useQuery } from '@apollo/client';
 import { Loan, LoanPayment } from './types';
 import { formatCurrency, getStatusColor } from './helpers/utils';
 import { AddNewPayment } from './components/AddPayment';
+import { calculateSimpleLoan } from './helpers/loans.utis';
 // import { LoanCalculator } from './components/LoanCalculator';
 
 const GET_LOANS_WITH_PAYMENTS = gql`
@@ -80,8 +81,8 @@ function App() {
                       {loan.dueDate}{' '}
                     </p>
 
+                    <b>Payments</b>
                     <div className="payment-divider" />
-
                     <div className="loan-payments">
                       {loan.loanPayments && loan.loanPayments.length > 0 ? (
                         loan.loanPayments.map((payment: LoanPayment) => (
@@ -90,10 +91,21 @@ function App() {
                               <b>Payment Date:</b>{' '}
                               {payment.paymentDate || 'N/A'}
                             </p>
-                            {payment.paymentAmount && (
+                            {payment.paymentAmount ? (
                               <p>
                                 <b>Amount:</b>{' '}
                                 {formatCurrency(payment.paymentAmount) ?? 'N/A'}
+                              </p>
+                            ) : (
+                              <p>
+                                <b>Amount:</b>{' '}
+                                {formatCurrency(
+                                  calculateSimpleLoan(
+                                    loan.principal,
+                                    loan.interestRate,
+                                    12
+                                  ).installment
+                                )}
                               </p>
                             )}
 
@@ -118,7 +130,6 @@ function App() {
                         </div>
                       )}
                     </div>
-
                     {/* <LoanCalculator
                       principal={loan.principal}
                       rate={loan.interestRate}
