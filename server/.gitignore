@@ -20,3 +20,6 @@ htmlcov/
 .coverage
 
 .cache/
+
+/package.json
+/package-lock.json
