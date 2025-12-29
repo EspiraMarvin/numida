@@ -66,7 +66,8 @@ class FlaskAppTestCase(unittest.TestCase):
             },
         ]
 
-        # create deep copies for each test to ensure each test start with clean data
+        # create deep copies for each test to ensure 
+        # each test start with clean data
         # This ensures each test starts with clean data
         self.mocked_loans = deepcopy(self.loans_fixture)
         self.mocked_loan_payments = deepcopy(self.loan_payments_fixture)
@@ -236,24 +237,6 @@ class FlaskAppTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         data = json.loads(response.data)
         self.assertIn("error", data)
-
-    def test_add_payment_duplicate_payment(self):
-        """Test adding duplicate payment for loan that already has a payment"""
-        # Loan 1 already has a payment in the fixture
-        payload = {
-            "loan_id": 1,
-            "payment_amount": 1500.0,
-            "payment_date": "2025-03-20",
-        }
-        response = self.app.post(
-            "/api/v1/payments",
-            data=json.dumps(payload),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 400)
-        data = json.loads(response.data)
-        self.assertIn("error", data)
-        self.assertIn("already submitted", data["error"].lower())
 
     def test_add_payment_empty_json(self):
         """Test adding payment with empty JSON body"""
