@@ -28,29 +28,6 @@ def add_payment():
         if not loan_obj:
             return jsonify({"error": f"Loan with id {loan_id} not found"}), 404
 
-        # Prevent adding a payment if one already exists with a date
-        existing_payment = next(
-            (
-                p
-                for p in loan_payments
-                if p["loan_id"] == loan_id and p["payment_date"] is not None
-            ),
-            None,
-        )
-        if existing_payment:
-            loan_obj = loan_lookup.get(loan_id)
-            return (
-                jsonify(
-                    {
-                        "error": (
-                            f"Loan payment with id {loan_obj['id']} "
-                            "already submitted"
-                        )
-                    }
-                ),
-                400,
-            )
-
         # parse payment date
         payment_date = None
         if payment_date_str:

@@ -8,7 +8,7 @@ from rest_api.payments import add_payment
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": ["http://localhost:5173"]}})
 
 
 app.add_url_rule(
