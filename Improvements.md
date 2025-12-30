@@ -22,12 +22,11 @@
 
 ### Current Limitations
 
-- No loan duration/term in assessment data → hardcoded 12-month assumption
-- No loan start dates in the loan schema
-- No installment tracking → payments treated as generic transactions
-- No outstanding balance tracking → no visibility into remaining amounts
-- Simple interest only → no principal/interest breakdown
-- No progress tracking, there's visual loan completion indicators such as loan status
+- No loan duration/term in assessment data, I hardcoded 12-month assumption
+- No loan start date in the loan schema
+- No installment tracking, in terms of installments count
+- No outstanding balance tracking, visibility into remaining loan amount
+- No loan payment progress tracking, there's loan completion indicators such as loan status (active, completed, defaulted, paid_off)
 
 ### A. Enhanced Data Models
 
